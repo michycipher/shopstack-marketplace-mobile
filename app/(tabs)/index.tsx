@@ -1,31 +1,20 @@
-import { StyleSheet } from 'react-native';
+import { router } from 'expo-router'
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { Header } from '@/components/Header'
+import { ProductCard } from '@/components/ProductCard'
+import { Screen } from '@/components/Screen'
+import { useCatalog } from '@/lib/catalog'
+import { useTheme } from '@/lib/theme'
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const categories = [
+  ['phone-portrait-outline', 'Phones'], ['laptop-outline', 'Computing'], ['headset-outline', 'Electronics'], ['shirt-outline', 'Fashion'], ['home-outline', 'Home'], ['sparkles-outline', 'Beauty'],
+] as const
 
-export default function TabOneScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
-  );
+export default function HomeScreen() {
+  const { theme } = useTheme()
+  const { products, stores, loading, refresh } = useCatalog()
+  return <Screen refreshing={loading} onRefresh={refresh}><Header /><View style={[styles.hero, { backgroundColor: theme.darkNavy }]}><View style={styles.heroCopy}><Text style={styles.eyebrow}>CARTUP PICKS</Text><Text style={styles.heroTitle}>Everyday finds, better prices.</Text><Text style={styles.heroSub}>Discover trusted stores and quick delivery across Nigeria.</Text><Pressable style={[styles.heroButton, { backgroundColor: theme.yellow }]} onPress={() => router.push('/(tabs)/shop')}><Text style={[styles.heroButtonText, { color: theme.ink }]}>Shop deals</Text><Ionicons name="arrow-forward" size={17} color={theme.ink} /></Pressable></View><View style={styles.heroShape}><Text style={styles.heroC}>C</Text><View style={styles.heroOrb} /></View></View><View style={styles.section}><View style={styles.sectionHeading}><View><Text style={[styles.kicker, { color: theme.blue }]}>BROWSE BY DEPARTMENT</Text><Text style={[styles.heading, { color: theme.ink }]}>What are you shopping for?</Text></View><Ionicons name="arrow-forward" size={20} color={theme.blue} /></View><View style={styles.categoryGrid}>{categories.map(([icon, label]) => <Pressable key={label} style={[styles.category, { backgroundColor: theme.surface, borderColor: theme.line }]} onPress={() => router.push({ pathname: '/(tabs)/shop', params: { category: label === 'Phones' ? 'Phones & Tablets' : label } })}><Ionicons name={icon} size={22} color={theme.blue} /><Text style={[styles.categoryText, { color: theme.ink }]}>{label}</Text></Pressable>)}</View></View><View style={styles.section}><View style={styles.sectionHeading}><View><Text style={[styles.kicker, { color: theme.blue }]}>FRESH FROM THE STORES</Text><Text style={[styles.heading, { color: theme.ink }]}>Popular right now</Text></View><Pressable onPress={() => router.push('/(tabs)/shop')}><Text style={[styles.link, { color: theme.blue }]}>See all</Text></Pressable></View>{loading ? <ActivityIndicator color={theme.blue} style={{ padding: 35 }} /> : <View style={styles.grid}>{products.slice(0, 4).map(product => <ProductCard key={product.id} product={product} />)}</View>}</View><View style={styles.section}><View style={styles.sectionHeading}><View><Text style={[styles.kicker, { color: theme.blue }]}>TRUSTED SELLERS</Text><Text style={[styles.heading, { color: theme.ink }]}>Stores worth knowing</Text></View></View>{stores.slice(0, 3).map(store => <Pressable key={store.slug} style={[styles.store, { backgroundColor: theme.surface, borderColor: theme.line }]} onPress={() => router.push(`/store/${store.slug}`)}><Image source={{ uri: store.image }} style={styles.storeImage} /><View style={{ flex: 1, gap: 4 }}><Text style={[styles.storeName, { color: theme.ink }]}>{store.name}</Text><Text style={[styles.storeMeta, { color: theme.muted }]}>{store.category} · {store.productCount} products</Text><View style={styles.storeRating}><Ionicons name="star" size={13} color="#F59E0B" /><Text style={[styles.storeMeta, { color: theme.muted }]}>{store.rating}</Text></View></View><Ionicons name="chevron-forward" size={18} color={theme.muted} /></Pressable>)}</View></Screen>
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+const styles = StyleSheet.create({ hero: { minHeight: 240, borderRadius: 24, padding: 24, overflow: 'hidden', flexDirection: 'row', alignItems: 'center' }, heroCopy: { flex: 1, zIndex: 2, gap: 10 }, eyebrow: { color: '#9FC0FF', fontSize: 11, fontWeight: '900', letterSpacing: 1.5 }, heroTitle: { color: '#fff', fontSize: 29, lineHeight: 34, fontWeight: '900', letterSpacing: -.8 }, heroSub: { color: '#B9C7DD', fontSize: 13, lineHeight: 19, maxWidth: 240 }, heroButton: { alignSelf: 'flex-start', minHeight: 42, paddingHorizontal: 15, borderRadius: 11, flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 5 }, heroButtonText: { fontSize: 12, fontWeight: '900' }, heroShape: { position: 'absolute', right: -20, width: 180, height: 220, alignItems: 'center', justifyContent: 'center' }, heroC: { color: '#FBBF24', fontSize: 150, fontStyle: 'italic', fontWeight: '900', opacity: .92 }, heroOrb: { position: 'absolute', width: 110, height: 110, borderRadius: 55, backgroundColor: '#346BDD', opacity: .32, right: 0, top: 4 }, section: { gap: 14 }, sectionHeading: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }, kicker: { fontSize: 10, fontWeight: '900', letterSpacing: 1.2, marginBottom: 4 }, heading: { fontSize: 20, fontWeight: '900', letterSpacing: -.4 }, link: { fontSize: 12, fontWeight: '800' }, categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 }, category: { width: '30.8%', minHeight: 84, borderWidth: 1, borderRadius: 16, alignItems: 'center', justifyContent: 'center', gap: 8, padding: 8 }, categoryText: { fontSize: 11, fontWeight: '800' }, grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 }, store: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderWidth: 1, borderRadius: 16 }, storeImage: { width: 54, height: 54, borderRadius: 14 }, storeName: { fontSize: 14, fontWeight: '900' }, storeMeta: { fontSize: 11 }, storeRating: { flexDirection: 'row', alignItems: 'center', gap: 4 } })

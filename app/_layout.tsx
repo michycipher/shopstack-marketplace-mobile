@@ -1,10 +1,14 @@
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { AuthProvider } from '@/lib/auth';
+import { CartProvider } from '@/lib/cart';
+import { CatalogProvider } from '@/lib/catalog';
+import { ThemeProvider } from '@/lib/theme';
+import { ToastProvider } from '@/lib/toast';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -43,14 +47,5 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
-  );
+  return <ThemeProvider><ToastProvider><AuthProvider><CatalogProvider><CartProvider><Stack screenOptions={{ headerShown: false }}><Stack.Screen name="(tabs)" /><Stack.Screen name="login" options={{ presentation: 'modal' }} /><Stack.Screen name="product/[id]" /><Stack.Screen name="store/[slug]" /><Stack.Screen name="checkout" /></Stack></CartProvider></CatalogProvider></AuthProvider></ToastProvider></ThemeProvider>;
 }

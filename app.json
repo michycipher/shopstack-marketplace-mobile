@@ -1,16 +1,18 @@
 {
   "expo": {
-    "name": "e-shopmobile",
-    "slug": "e-shopmobile",
+    "name": "CartUp Mobile",
+    "slug": "cartup-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "eshopmobile",
+    "scheme": "cartupmobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.michycipher.cartup"
     },
     "android": {
+      "package": "com.michycipher.cartup",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -26,6 +28,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-secure-store",
       [
         "expo-splash-screen",
         {
