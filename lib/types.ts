@@ -41,7 +41,7 @@ export type Order = {
   status: string
   total: number
   date: string
-  items: Array<{ id: string; name: string; image: string; quantity: number }>
+  items: { id: string; name: string; image: string; quantity: number }[]
 }
 
 export const money = (value: number) => `₦${value.toLocaleString('en-NG')}`

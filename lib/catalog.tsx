@@ -21,7 +21,10 @@ export function CatalogProvider({ children }: PropsWithChildren) {
       setError(requestError instanceof Error ? requestError.message : 'Catalog unavailable')
     } finally { setLoading(false) }
   }, [])
-  useEffect(() => { refresh() }, [refresh])
+  useEffect(() => {
+    const task = setTimeout(() => { void refresh() }, 0)
+    return () => clearTimeout(task)
+  }, [refresh])
   const value = useMemo(() => ({ products, stores, loading, error, refresh }), [products, stores, loading, error, refresh])
   return <CatalogContext.Provider value={value}>{children}</CatalogContext.Provider>
 }

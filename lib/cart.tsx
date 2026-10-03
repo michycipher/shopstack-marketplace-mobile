@@ -33,7 +33,10 @@ export function CartProvider({ children }: PropsWithChildren) {
     } finally { setSyncing(false) }
   }, [ready, user, show])
 
-  useEffect(() => { refresh() }, [refresh])
+  useEffect(() => {
+    const task = setTimeout(() => { void refresh() }, 0)
+    return () => clearTimeout(task)
+  }, [refresh])
   useEffect(() => {
     const handler = (state: string) => { if (state === 'active' && user) refresh() }
     const subscription = AppState.addEventListener('change', handler)
