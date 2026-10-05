@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from '@/lib/auth';
 import { CartProvider } from '@/lib/cart';
@@ -47,5 +48,5 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  return <ThemeProvider><ToastProvider><AuthProvider><CatalogProvider><CartProvider><Stack screenOptions={{ headerShown: false }}><Stack.Screen name="(tabs)" /><Stack.Screen name="login" options={{ presentation: 'modal' }} /><Stack.Screen name="product/[id]" /><Stack.Screen name="store/[slug]" /><Stack.Screen name="checkout" /></Stack></CartProvider></CatalogProvider></AuthProvider></ToastProvider></ThemeProvider>;
+  return <SafeAreaProvider><ThemeProvider><ToastProvider><AuthProvider><CatalogProvider><CartProvider><Stack screenOptions={{ headerShown: false }}><Stack.Screen name="(tabs)" /><Stack.Screen name="login" options={{ presentation: 'modal' }} /><Stack.Screen name="product/[id]" /><Stack.Screen name="store/[slug]" /><Stack.Screen name="checkout" /></Stack></CartProvider></CatalogProvider></AuthProvider></ToastProvider></ThemeProvider></SafeAreaProvider>;
 }
