@@ -37,12 +37,6 @@ export function authenticateGoogle(credential: string) {
   })
 }
 
-export function authenticateApple(credential: string, challenge: string, name?: string) {
-  return request<{ source: string; user: User; sessionToken: string }>('/api/auth/apple', {
-    method: 'POST', body: JSON.stringify({ credential, challenge, name }),
-  })
-}
-
 export function getCart() {
   return request<{ authenticated: boolean; items: CartItem[] }>('/api/cart')
 }

@@ -2,6 +2,7 @@
   "expo": {
     "name": "CartUp Mobile",
     "slug": "cartup-mobile",
+    "owner": "michuo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,7 +11,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.michycipher.cartup",
-      "usesAppleSignIn": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -40,8 +40,7 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ],
-      "@react-native-google-signin/google-signin"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

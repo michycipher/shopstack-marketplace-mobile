@@ -1,9 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react'
-import { authenticateGoogle, authenticateApple, getMe, setSessionToken } from './api'
+import { authenticateGoogle, getMe, setSessionToken } from './api'
 import type { User } from './types'
 import { sessionStorage } from './session-storage'
 
-type AuthContextValue = { user: User | null; ready: boolean; signingIn: boolean; signIn: (credential: string) => Promise<void>; signInApple: (credential: string, challenge: string, name?: string) => Promise<void>; signOut: () => Promise<void>; refresh: () => Promise<void> }
+type AuthContextValue = { user: User | null; ready: boolean; signingIn: boolean; signIn: (credential: string) => Promise<void>; signOut: () => Promise<void>; refresh: () => Promise<void> }
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: PropsWithChildren) {
@@ -58,17 +58,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }, [])
 
-  const signInApple = useCallback(async (credential: string, challenge: string, name?: string) => {
-    setSigningIn(true)
-    try {
-      const response = await authenticateApple(credential, challenge, name)
-      if (!response.sessionToken) throw new Error('The Apple session could not be created')
-      await sessionStorage.set(response.sessionToken)
-      setSessionToken(response.sessionToken)
-      setUser(response.user)
-    } finally { setSigningIn(false) }
-  }, [])
-
   const signOut = useCallback(async () => {
     try {
       await sessionStorage.remove()
@@ -78,7 +67,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }, [])
 
-  const value = useMemo(() => ({ user, ready, signingIn, signIn, signInApple, signOut, refresh }), [user, ready, signingIn, signIn, signInApple, signOut, refresh])
+  const value = useMemo(() => ({ user, ready, signingIn, signIn, signOut, refresh }), [user, ready, signingIn, signIn, signOut, refresh])
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 

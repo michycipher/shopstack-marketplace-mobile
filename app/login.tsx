@@ -4,7 +4,6 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 import { Ionicons } from '@expo/vector-icons'
 import { BrandMark } from '@/components/BrandMark'
 import GoogleLogin from '@/components/GoogleLogin'
-import AppleLogin from '@/components/AppleLogin'
 import { useAuth } from '@/lib/auth'
 import { getUserAvatar, getUserDisplayName, getUserInitials } from '@/lib/user'
 import { useTheme } from '@/lib/theme'
@@ -12,13 +11,12 @@ import { useToast } from '@/lib/toast'
 
 export default function LoginScreen() {
   const { theme } = useTheme()
-  const { user, signingIn, signIn, signInApple, signOut } = useAuth()
+  const { user, signingIn, signIn, signOut } = useAuth()
   const { show } = useToast()
   const [message, setMessage] = useState('')
   function failed(text: string) { setMessage(text); show(text, 'error') }
   function completed() { show('Welcome back to CartUp'); router.replace('/(tabs)') }
   async function google(token: string) { setMessage(''); await signIn(token); completed() }
-  async function apple(token: string, challenge: string, name?: string) { setMessage(''); await signInApple(token, challenge, name); completed() }
   async function logout() { await signOut(); show('You have been signed out'); router.replace('/(tabs)') }
 
   const displayName = user ? getUserDisplayName(user) : ''
@@ -41,7 +39,6 @@ export default function LoginScreen() {
       </> : <>
         <Text style={[styles.copy, { color: theme.muted }]}>Use the same Google account on web and mobile to keep your cart and orders together.</Text>
         <GoogleLogin onCredential={google} onError={failed} disabled={signingIn} />
-        <AppleLogin onCredential={apple} onError={failed} disabled={signingIn} />
         {message ? <Text accessibilityRole="alert" style={{ color: theme.danger }}>{message}</Text> : null}
         <View style={[styles.note, { backgroundColor: theme.softBlue }]}><Ionicons name="shield-checkmark-outline" size={19} color={theme.blue} /><Text style={[styles.noteText, { color: theme.ink }]}>Your password stays with your sign-in provider.</Text></View>
       </>}
