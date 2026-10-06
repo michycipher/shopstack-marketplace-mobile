@@ -31,6 +31,8 @@ export type User = {
   email: string
   name?: string
   full_name?: string
+  avatar_url?: string
+  avatarUrl?: string
 }
 
 export type CartItem = Product & { quantity: number }
