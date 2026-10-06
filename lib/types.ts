@@ -43,6 +43,7 @@ export type Order = {
   status: string
   total: number
   date: string
+  itemCount?: number
   items: { id: string; name: string; image: string; quantity: number }[]
 }
 

@@ -22,7 +22,7 @@ export default function LoginScreen() {
   const displayName = user ? getUserDisplayName(user) : ''
   const avatar = user ? getUserAvatar(user) : undefined
 
-  return <ScrollView style={{ backgroundColor: theme.background }} contentContainerStyle={styles.page}>
+  return <ScrollView style={[styles.scroll, { backgroundColor: theme.background }]} contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
     <View style={styles.top}><Pressable accessibilityLabel="Go back" onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')} style={[styles.back, { backgroundColor: theme.surface, borderColor: theme.line }]}><Ionicons name="arrow-back" size={19} color={theme.ink} /></Pressable><BrandMark /></View>
     <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.line }]}>
       <View style={[styles.logo, { backgroundColor: theme.yellow }]}><Text style={styles.logoText}>C</Text></View>
@@ -48,6 +48,7 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
+  scroll: { flex: 1 },
   page: { flexGrow: 1, padding: 22, gap: 28, justifyContent: 'space-between', alignItems: 'center' },
   top: { width: '100%', flexDirection: 'row', alignItems: 'center', gap: 16 },
   back: { width: 40, height: 40, borderRadius: 13, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },

@@ -48,8 +48,18 @@ export function saveCart(items: CartItem[]) {
   })
 }
 
-export function getOrders() {
-  return request<{ authenticated: boolean; orders: Order[] }>('/api/orders')
+export type OrdersResponse = {
+  authenticated: boolean
+  orders: Order[]
+  pagination: { page: number; pageSize: number; total: number; pageCount: number }
+}
+
+export function getOrders(page = 1, pageSize = 5) {
+  return request<OrdersResponse>(`/api/orders?page=${page}&pageSize=${pageSize}`)
+}
+
+export function deleteOrder(orderId: string) {
+  return request<{ deleted: boolean; orderId: string }>(`/api/orders/${encodeURIComponent(orderId)}`, { method: 'DELETE' })
 }
 
 export function createOrder(input: { email: string; items: CartItem[]; address: Record<string, string> }) {
