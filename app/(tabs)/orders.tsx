@@ -1,12 +1,13 @@
-import { router } from 'expo-router'
-import { useCallback, useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { router, useFocusEffect } from 'expo-router'
+import { useCallback, useState } from 'react'
+import { ActivityIndicator, Alert, AppState, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Header } from '@/components/Header'
 import { EmptyState } from '@/components/EmptyState'
 import { Screen } from '@/components/Screen'
 import { deleteOrder, getOrders } from '@/lib/api'
 import { useAuth } from '@/lib/auth'
+import { useCart } from '@/lib/cart'
 import { useTheme } from '@/lib/theme'
 import { useToast } from '@/lib/toast'
 import type { Order } from '@/lib/types'
@@ -17,6 +18,7 @@ const PAGE_SIZE = 5
 export default function OrdersScreen() {
   const { theme } = useTheme()
   const { user, ready } = useAuth()
+  const { pendingPayment } = useCart()
   const { show } = useToast()
   const [orders, setOrders] = useState<Order[]>([])
   const [page, setPage] = useState(1)
@@ -26,22 +28,29 @@ export default function OrdersScreen() {
   const [deleting, setDeleting] = useState<string | null>(null)
   const [error, setError] = useState('')
 
-  const load = useCallback(async (targetPage = 1) => {
+  const load = useCallback(async (targetPage = 1, silent = false) => {
     if (!user) return
-    setLoading(true)
+    if (!silent) setLoading(true)
     try {
       const response = await getOrders(targetPage, PAGE_SIZE)
-      setOrders(response.orders)
+      setOrders(current => JSON.stringify(current) === JSON.stringify(response.orders) ? current : response.orders)
       setPage(response.pagination.page)
       setPageCount(response.pagination.pageCount)
       setTotalOrders(response.pagination.total)
       setError('')
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Orders unavailable')
-    } finally { setLoading(false) }
+    } finally { if (!silent) setLoading(false) }
   }, [user])
 
-  useEffect(() => { const timer = setTimeout(() => { void load(1) }, 0); return () => clearTimeout(timer) }, [load])
+  useFocusEffect(useCallback(() => {
+    const timer = setTimeout(() => { void load(1) }, 0)
+    const interval = pendingPayment && user ? setInterval(() => { void load(1, true) }, 8000) : undefined
+    const subscription = AppState.addEventListener('change', state => {
+      if (state === 'active') void load(1, true)
+    })
+    return () => { clearTimeout(timer); if (interval) clearInterval(interval); subscription.remove() }
+  }, [load, pendingPayment, user]))
 
   function itemCount(order: Order) {
     return order.itemCount ?? order.items.reduce((count, item) => count + item.quantity, 0)

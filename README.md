@@ -13,9 +13,11 @@ The app includes the home experience, search and category filtering, product and
 
 ## Shared account and cart
 
-The mobile app sends the same Google ID token to CartUp's `/api/auth/google` route with `platform: "mobile"`. The server returns a signed mobile session token, which the app stores with SecureStore. Authenticated cart changes use `/api/cart` and are persisted in Neon, so the website and mobile app read the same cart. The app refreshes the shared cart when it becomes active and every eight seconds while signed in.
+The mobile app sends the same Google ID token to CartUp's `/api/auth/google` route with `platform: "mobile"`. The server returns a signed mobile session token, which the app stores with SecureStore. Authenticated cart changes use `/api/cart` and are persisted in Neon, so the website and mobile app read the same cart. The app refreshes the shared cart when it becomes active, when the Cart tab opens, or when the shopper pulls down. Pending payments are checked every eight seconds until confirmed.
 
 The shared API changes must be deployed before cross-device cart testing. Guest carts remain local to each device.
+
+After checkout opens Paystack in the browser, the app keeps the pending order on-device. For signed-in shoppers it checks the server order status when the app returns and removes purchased quantities only after the order is marked `Paid`. Guest orders cannot be verified through the current `/api/orders` endpoint, so the guest confirms payment before the local cart is updated.
 
 ## Physical-phone test
 

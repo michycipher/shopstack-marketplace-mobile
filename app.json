@@ -3,7 +3,7 @@
     "name": "CartUp Mobile",
     "slug": "cartup-mobile",
     "owner": "michuo",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "cartupmobile",
@@ -17,6 +17,7 @@
     },
     "android": {
       "package": "com.michycipher.cartup",
+      "versionCode": 5,
       "adaptiveIcon": {
         "backgroundColor": "#FBBF24",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
